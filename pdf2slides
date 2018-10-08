@@ -1,0 +1,69 @@
+#!/usr/bin/python
+from pgmagick import Image, ImageList
+from GoogleAPIs import GoogleDrive, GoogleSlides
+import sys, os
+
+# If modifying these scopes, delete the file token.json
+SCOPES = [
+  'https://www.googleapis.com/auth/presentations',
+  'https://www.googleapis.com/auth/drive'
+]
+
+if not os.path.isfile('token.json'):
+  drive = GoogleDrive('token.json', 'credentials.json', SCOPES)
+  slides = GoogleSlides('token.json', 'credentials.json', SCOPES)
+  sys.exit()
+
+if len(sys.argv) < 2:
+  print 'Syntax: ' + sys.argv[0] + ' <pdf file>'
+  sys.exit()
+
+imagelist = ImageList()
+imagelist.readImages(sys.argv[1])
+print 'Read PDF file'
+
+drive = GoogleDrive('token.json', 'credentials.json', SCOPES)
+slides = GoogleSlides('token.json', 'credentials.json', SCOPES)
+print 'Initialized APIs'
+
+# Create the presentation
+presentation = slides.createPresentation(sys.argv[1])
+pid = presentation['presentationId']
+print 'Created presentation ' + pid
+
+# Remove the blank first slide
+slides.clearSlides(presentation)
+print 'Removed blank slide'
+  
+# Populate the slides
+for image in imagelist:
+  # Write the image out
+  image.write('temp.png')
+
+  # Create the slide
+  slideid = slides.createSlide(pid)
+  print 'Added slide ' + slideid
+
+  # Upload the image
+  fid = drive.uploadFile('temp.png', 'image/png')
+  print 'Uploaded image as ' + fid
+
+  # Remove it locally
+  os.remove('temp.png')
+  print 'Deleted local image file'
+
+  # Make it public
+  drive.makePublic(fid)
+  print 'Shared image file'
+
+  # Get the public URL
+  url = drive.getWebContentLink(fid)
+  print 'Public URL is ' + url
+
+  # Add the image
+  slides.addImageToSlide(pid, slideid, url)
+  print 'Added image to slide'
+
+  # Remove the image from Google Drive
+  drive.deleteFile(fid)
+  print 'Deleted file ' + fid + ' from Google Drive'
