@@ -5,8 +5,8 @@ ImageMagick and the Google Slides/Drive REST APIs
 
 ## How it works
 
-Using ImageMagick (and specifically the Python pgmagick module), each page
-of the PDF gets converted into an image.  That image then gets uploaded to
+Using ImageMagick (and specifically the Python wand module), each page of
+the PDF gets converted into an image.  That image then gets uploaded to
 Google Drive, added to a Slides presentation as a new slide, then deleted
 from Google Drive.  You're left with a Slides presentation containing one
 slide per page of the source document, each with a full-page image of the
@@ -21,7 +21,7 @@ with pip:
 
 Or install them with APT if you're running Debian and friends:
 
-`sudo apt-get install python-pgmagick python-oauth2client python-googleapi`
+`sudo apt-get install python-wand python-oauth2client python-googleapi`
 
 ## Google Setup
 

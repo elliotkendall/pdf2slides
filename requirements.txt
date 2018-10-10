@@ -1,1 +1,1 @@
-google-api-python-client oauth2client pgmagick
+google-api-python-client oauth2client wand

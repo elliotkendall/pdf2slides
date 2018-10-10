@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from pgmagick import Image, ImageList
+from wand.image import Image
 from GoogleAPIs import GoogleDrive, GoogleSlides
 import sys, os
 
@@ -18,8 +19,7 @@ if len(sys.argv) < 2:
   print 'Syntax: ' + sys.argv[0] + ' <pdf file>'
   sys.exit()
 
-imagelist = ImageList()
-imagelist.readImages(sys.argv[1])
+pages = Image(filename=sys.argv[1], resolution=300)
 print 'Read PDF file'
 
 drive = GoogleDrive('token.json', 'credentials.json', SCOPES)
@@ -36,9 +36,14 @@ slides.clearSlides(presentation)
 print 'Removed blank slide'
   
 # Populate the slides
-for image in imagelist:
+i=0
+for page in pages.sequence:
+  print 'Processing page ' + str(i)
+
   # Write the image out
-  image.write('temp.png')
+  with Image(page) as image:
+    image.format='png'
+    image.save(filename='temp.png')
 
   # Create the slide
   slideid = slides.createSlide(pid)
@@ -67,3 +72,5 @@ for image in imagelist:
   # Remove the image from Google Drive
   drive.deleteFile(fid)
   print 'Deleted file ' + fid + ' from Google Drive'
+
+  i=i+1
