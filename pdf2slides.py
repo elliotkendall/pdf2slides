@@ -16,10 +16,12 @@ if not os.path.isfile("token.json"):
     sys.exit()
 
 if len(sys.argv) < 2:
-    print("Syntax: " + sys.argv[0] + " <pdf file>")
+    print("Syntax: " + sys.argv[0] + " <pdf file> [resolution]")
     sys.exit()
 
-pages = Image(filename=sys.argv[1], resolution=300)
+resolution = int(sys.argv[2]) if len(sys.argv) == 3 else 300
+
+pages = Image(filename=sys.argv[1], resolution=resolution)
 print("Read PDF file")
 
 drive = GoogleDrive("token.json", "credentials.json", SCOPES)
@@ -36,7 +38,7 @@ slides.clearSlides(presentation)
 print("Removed blank slide")
 
 # Populate the slides
-i = 0
+i = 1
 for page in pages.sequence:
     print("Processing page " + str(i))
 
