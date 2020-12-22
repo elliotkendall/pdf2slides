@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 from pgmagick import Image, ImageList
 from wand.image import Image
 from GoogleAPIs import GoogleDrive, GoogleSlides
@@ -11,7 +11,6 @@ SCOPES = [
 ]
 
 if not os.path.isfile("token.json"):
-    print("Doing something with the token file")
     drive = GoogleDrive("token.json", "credentials.json", SCOPES)
     slides = GoogleSlides("token.json", "credentials.json", SCOPES)
     sys.exit()
@@ -21,7 +20,6 @@ if len(sys.argv) < 2:
     sys.exit()
 
 pages = Image(filename=sys.argv[1], resolution=300)
-# pages = Image(filename="dummy.pdf", resolution=72)
 print("Read PDF file")
 
 drive = GoogleDrive("token.json", "credentials.json", SCOPES)
