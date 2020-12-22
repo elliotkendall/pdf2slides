@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 from pgmagick import Image, ImageList
 from wand.image import Image
 from GoogleAPIs import GoogleDrive, GoogleSlides
